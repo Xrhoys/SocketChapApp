@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import "./styles.css";
 import io from "socket.io-client";
 
-const client = io("https://jvkvv.sse.codesandbox.io");
+const url = window.location.href.replace("-3000", "");
+const client = io(url);
 
 export default function App() {
   const [connection, setConnection] = useState(client.connected);
