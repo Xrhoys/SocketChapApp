@@ -9,6 +9,11 @@ const client = io(url);
 
 export default function App() {
   const [connection, setConnection] = useState(client.connected);
+  const [chatLog, setChatLog] = useState([]);
+
+  const addToLog = (element) => {
+    setChatLog([...chatLog, element]);
+  };
 
   client.on("connect", () => {
     setConnection(true);
@@ -17,6 +22,8 @@ export default function App() {
   client.on("disconnect", () => {
     setConnection(false);
   });
+
+  client.on("server_sendMessage", (data) => addToLog(data));
 
   useEffect(() => {
     setTimeout(() => {
@@ -27,7 +34,7 @@ export default function App() {
   return (
     <div className="App">
       <p>State: {connection ? "Connected" : "Disconnected"}</p>
-      <Chat messageList={[{ id: 1, content: "something" }]} />
+      <Chat messageList={chatLog} />
     </div>
   );
 }

@@ -15,7 +15,16 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
+  sendMessage(socket.id, "MESSAGE FROM SERVER");
 });
+
+io.on("client_sendMessage", (data) => {
+  console.log(data);
+});
+
+const sendMessage = (id, message) => {
+  io.emit("server_sendMessage", { id, message });
+};
 
 http.listen(5000, function () {
   console.log("Listening on *: 5000");
