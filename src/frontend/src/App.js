@@ -2,11 +2,18 @@ import React from "react";
 import { useEffect, useState } from "react";
 import "./styles.css";
 import io from "socket.io-client";
+import Chat from "./components/Chat";
 
-const client = io("https://jvkvv.sse.codesandbox.io");
+const url = window.location.href.replace("-3000", "");
+const client = io(url);
 
 export default function App() {
   const [connection, setConnection] = useState(client.connected);
+  const [chatLog, setChatLog] = useState([]);
+
+  const addToLog = (element) => {
+    setChatLog([...chatLog, element]);
+  };
 
   client.on("connect", () => {
     setConnection(true);
@@ -15,6 +22,8 @@ export default function App() {
   client.on("disconnect", () => {
     setConnection(false);
   });
+
+  client.on("server_sendMessage", (data) => addToLog(data));
 
   useEffect(() => {
     setTimeout(() => {
@@ -25,6 +34,7 @@ export default function App() {
   return (
     <div className="App">
       <p>State: {connection ? "Connected" : "Disconnected"}</p>
+      <Chat messageList={chatLog} />
     </div>
   );
 }
